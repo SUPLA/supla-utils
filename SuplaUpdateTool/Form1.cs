@@ -146,18 +146,44 @@ namespace SuplaUpdateTool
                         throw new Exception("Unsupported device");
                     }
 
+                    foreach(HtmlNode input in inputs)
+                    {
+                        FormField field = new FormField();
+                        field.name = input.Attributes["name"] == null ? "" : input.Attributes["name"].Value;
+                        field.value = input.Attributes["value"] == null ? "" : input.Attributes["value"].Value;
+
+                        device.fields.Add(field);
+                    }
+
                     IEnumerable<HtmlNode> selects = htmlDoc.DocumentNode.Descendants("select");
 
-                    var upd = selects == null ? null : selects.Where(n => n.Attributes["name"] != null && n.Attributes["name"].Value == "upd");
+                    foreach (HtmlNode select in selects)
+                    {
+                        FormField field = new FormField();
+                        field.name = select.Attributes["name"] == null ? "" : select.Attributes["name"].Value;
+                        
+
+                        IEnumerable<HtmlNode> options = select.Descendants("option").Where(n => n.Attributes["selected"] != null);
+                        
+                        if ( options != null && options.Count() == 1 )
+                        {
+                            HtmlNode option = options.First();
+                            field.value = option.Attributes["value"] == null ? "" : option.Attributes["value"].Value;
+                        }
+
+                        device.fields.Add(field);
+                    }
+
+                    var upd = device.fields.Where(n => n.name == "upd");
 
                     if (upd != null && upd.Count() != 1 )
                     {
                         throw new Exception("No update capabilities");
                     }
 
-                    var sid = inputs.Where(n => n.Attributes["name"] != null && n.Attributes["name"].Value == "sid");
-                    var wpw = inputs.Where(n => n.Attributes["name"] != null && n.Attributes["name"].Value == "wpw");
-                    var svr = inputs.Where(n => n.Attributes["name"] != null && n.Attributes["name"].Value == "svr");
+                    var sid = device.fields.Where(n => n.name == "sid");
+                    var wpw = device.fields.Where(n => n.name == "wpw");
+                    var svr = device.fields.Where(n => n.name == "svr");
 
                     string pattern = @"<h1>(.*)<\/h1><span>LAST STATE: (.*)<br>Firmware: (.*)<br>GUID: (.*)<br>MAC: (.*)<\/span>";
                     Match match = Regex.Match(task.Result, pattern);
