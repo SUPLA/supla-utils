@@ -30,30 +30,9 @@ namespace SuplaUpdateTool
         public string value;
     }
 
-    class FormFields : IEnumerable
-    {
-        private ArrayList fields = new ArrayList();
-
-        public FormField this[int index]
-        {
-            get { return (FormField)fields[index]; }
-            set { fields.Insert(index, value); }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return fields.GetEnumerator();
-        }
-
-        public int Add(FormField field)
-        {
-            return fields.Add(field);
-        }
-    }
-
     class SuplaDevice
     {
-        private FormFields fields { get; }
+        public List<FormField> fields = new List<FormField>();
 
         public WlanClient.WlanInterface wlanIface;
         public Wlan.WlanAvailableNetwork network;
@@ -67,31 +46,7 @@ namespace SuplaUpdateTool
 
         public Boolean authByEmail;
 
-        SuplaDevice()
-        {
-            fields = new FormFields();
-        }
 
     }
 
-    class SuplaDevices : IEnumerable
-    {
-        private ArrayList devices = new ArrayList();
-
-        public SuplaDevice this[int index]
-        {
-            get { return (SuplaDevice)devices[index]; }
-            set { devices.Insert(index, value); }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return devices.GetEnumerator();
-        }
-
-        public int Add(SuplaDevice device)
-        {
-            return devices.Add(device);
-        }
-    }
 }

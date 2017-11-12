@@ -55,8 +55,7 @@ namespace SuplaUpdateTool
         private void button1_Click(object sender, EventArgs e)
         {
 
-            SuplaDevices devices = new SuplaDevices();
-       
+            List<SuplaDevice> devices = new List<SuplaDevice>();
 
             WlanClient client = new WlanClient();
            
@@ -77,6 +76,7 @@ namespace SuplaUpdateTool
                         device.wlanIface = wlanIface;
                         device.ssid = ssid;
                         devices.Add(device);
+
                     }
 
                 }
@@ -84,7 +84,7 @@ namespace SuplaUpdateTool
             }
 
 
-            foreach(SuplaDevice device in list)
+            foreach(SuplaDevice device in devices)
             {
                 string profileXml = string.Format("<?xml version=\"1.0\"?><WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\"><name>{0}</name><SSIDConfig><SSID><name>{0}</name></SSID></SSIDConfig><connectionType>ESS</connectionType><MSM><security><authEncryption><authentication>open</authentication><encryption>none</encryption><useOneX>false</useOneX></authEncryption></security></MSM></WLANProfile>", device.ssid);
 
