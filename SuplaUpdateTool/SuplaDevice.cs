@@ -19,11 +19,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NativeWifi;
+using System.Collections;
 
 namespace SuplaUpdateTool
 {
+
+    class FormField
+    {
+        public string name;
+        public string value;
+    }
+
+    class FormFields : IEnumerable
+    {
+        private ArrayList fields = new ArrayList();
+
+        public FormField this[int index]
+        {
+            get { return (FormField)fields[index]; }
+            set { fields.Insert(index, value); }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return fields.GetEnumerator();
+        }
+
+        public int Add(FormField field)
+        {
+            return fields.Add(field);
+        }
+    }
+
     class SuplaDevice
     {
+        private FormFields fields { get; }
+
         public WlanClient.WlanInterface wlanIface;
         public Wlan.WlanAvailableNetwork network;
         public string ssid;
@@ -36,5 +67,31 @@ namespace SuplaUpdateTool
 
         public Boolean authByEmail;
 
+        SuplaDevice()
+        {
+            fields = new FormFields();
+        }
+
+    }
+
+    class SuplaDevices : IEnumerable
+    {
+        private ArrayList devices = new ArrayList();
+
+        public SuplaDevice this[int index]
+        {
+            get { return (SuplaDevice)devices[index]; }
+            set { devices.Insert(index, value); }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return devices.GetEnumerator();
+        }
+
+        public int Add(SuplaDevice device)
+        {
+            return devices.Add(device);
+        }
     }
 }

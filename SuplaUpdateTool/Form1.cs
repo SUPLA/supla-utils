@@ -55,7 +55,8 @@ namespace SuplaUpdateTool
         private void button1_Click(object sender, EventArgs e)
         {
 
-            List<SuplaDevice> list = new List<SuplaDevice>();
+            SuplaDevices devices = new SuplaDevices();
+       
 
             WlanClient client = new WlanClient();
            
@@ -75,7 +76,7 @@ namespace SuplaUpdateTool
                         device.network = network;
                         device.wlanIface = wlanIface;
                         device.ssid = ssid;
-                        list.Add(device);
+                        devices.Add(device);
                     }
 
                 }
