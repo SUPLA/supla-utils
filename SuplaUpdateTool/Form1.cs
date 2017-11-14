@@ -370,9 +370,6 @@ namespace SuplaUpdateTool
 
         private void LoadSettings()
         {
-            btnSave.Enabled = false;
-            btnUndo.Enabled = false;
-
             string group = @"\WiFi";
             edWifiName.Text = (string)Registry.GetValue(regKeyName + group, "SSID", "");
 
@@ -401,6 +398,9 @@ namespace SuplaUpdateTool
             {
                 edSuplaLocationPwd.Text = Encoding.UTF8.GetString(Convert.FromBase64String(pwd));
             }
+
+            btnSave.Enabled = false;
+            btnUndo.Enabled = false;
         }
 
 

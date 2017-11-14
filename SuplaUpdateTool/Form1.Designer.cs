@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnStop = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -38,14 +38,7 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.button1 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.sSIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.stateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.firmwareDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NewFirmware = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lastDeviceStateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gUIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.suplaDeviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnFind = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -70,15 +63,22 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sSIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.stateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.firmwareDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lastDeviceStateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gUIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.suplaDeviceBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.suplaDeviceBindingSource)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.suplaDeviceBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // btnStop
@@ -174,45 +174,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(887, 333);
             this.dataGridView1.TabIndex = 1;
             // 
-            // sSIDDataGridViewTextBoxColumn
-            // 
-            this.sSIDDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.sSIDDataGridViewTextBoxColumn.DataPropertyName = "SSID";
-            this.sSIDDataGridViewTextBoxColumn.HeaderText = "SSID";
-            this.sSIDDataGridViewTextBoxColumn.Name = "sSIDDataGridViewTextBoxColumn";
-            this.sSIDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.sSIDDataGridViewTextBoxColumn.Width = 57;
-            // 
-            // stateDataGridViewTextBoxColumn
-            // 
-            this.stateDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.stateDataGridViewTextBoxColumn.DataPropertyName = "State";
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.stateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            this.stateDataGridViewTextBoxColumn.HeaderText = "State";
-            this.stateDataGridViewTextBoxColumn.Name = "stateDataGridViewTextBoxColumn";
-            this.stateDataGridViewTextBoxColumn.ReadOnly = true;
-            this.stateDataGridViewTextBoxColumn.Width = 57;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 60;
-            // 
-            // firmwareDataGridViewTextBoxColumn
-            // 
-            this.firmwareDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.firmwareDataGridViewTextBoxColumn.DataPropertyName = "Firmware";
-            this.firmwareDataGridViewTextBoxColumn.HeaderText = "Old Firmware";
-            this.firmwareDataGridViewTextBoxColumn.Name = "firmwareDataGridViewTextBoxColumn";
-            this.firmwareDataGridViewTextBoxColumn.ReadOnly = true;
-            this.firmwareDataGridViewTextBoxColumn.Width = 86;
-            // 
             // NewFirmware
             // 
             this.NewFirmware.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -221,26 +182,6 @@
             this.NewFirmware.Name = "NewFirmware";
             this.NewFirmware.ReadOnly = true;
             this.NewFirmware.Width = 91;
-            // 
-            // lastDeviceStateDataGridViewTextBoxColumn
-            // 
-            this.lastDeviceStateDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.lastDeviceStateDataGridViewTextBoxColumn.DataPropertyName = "LastDeviceState";
-            this.lastDeviceStateDataGridViewTextBoxColumn.HeaderText = "Last device state";
-            this.lastDeviceStateDataGridViewTextBoxColumn.Name = "lastDeviceStateDataGridViewTextBoxColumn";
-            this.lastDeviceStateDataGridViewTextBoxColumn.ReadOnly = true;
-            this.lastDeviceStateDataGridViewTextBoxColumn.Width = 104;
-            // 
-            // gUIDDataGridViewTextBoxColumn
-            // 
-            this.gUIDDataGridViewTextBoxColumn.DataPropertyName = "GUID";
-            this.gUIDDataGridViewTextBoxColumn.HeaderText = "GUID";
-            this.gUIDDataGridViewTextBoxColumn.Name = "gUIDDataGridViewTextBoxColumn";
-            this.gUIDDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // suplaDeviceBindingSource
-            // 
-            this.suplaDeviceBindingSource.DataSource = typeof(SuplaUpdateTool.SuplaDevice);
             // 
             // btnUpdate
             // 
@@ -474,6 +415,65 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // sSIDDataGridViewTextBoxColumn
+            // 
+            this.sSIDDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.sSIDDataGridViewTextBoxColumn.DataPropertyName = "SSID";
+            this.sSIDDataGridViewTextBoxColumn.HeaderText = "SSID";
+            this.sSIDDataGridViewTextBoxColumn.Name = "sSIDDataGridViewTextBoxColumn";
+            this.sSIDDataGridViewTextBoxColumn.ReadOnly = true;
+            this.sSIDDataGridViewTextBoxColumn.Width = 57;
+            // 
+            // stateDataGridViewTextBoxColumn
+            // 
+            this.stateDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.stateDataGridViewTextBoxColumn.DataPropertyName = "State";
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.stateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.stateDataGridViewTextBoxColumn.HeaderText = "State";
+            this.stateDataGridViewTextBoxColumn.Name = "stateDataGridViewTextBoxColumn";
+            this.stateDataGridViewTextBoxColumn.ReadOnly = true;
+            this.stateDataGridViewTextBoxColumn.Width = 57;
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.Width = 60;
+            // 
+            // firmwareDataGridViewTextBoxColumn
+            // 
+            this.firmwareDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.firmwareDataGridViewTextBoxColumn.DataPropertyName = "Firmware";
+            this.firmwareDataGridViewTextBoxColumn.HeaderText = "Old Firmware";
+            this.firmwareDataGridViewTextBoxColumn.Name = "firmwareDataGridViewTextBoxColumn";
+            this.firmwareDataGridViewTextBoxColumn.ReadOnly = true;
+            this.firmwareDataGridViewTextBoxColumn.Width = 86;
+            // 
+            // lastDeviceStateDataGridViewTextBoxColumn
+            // 
+            this.lastDeviceStateDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.lastDeviceStateDataGridViewTextBoxColumn.DataPropertyName = "LastDeviceState";
+            this.lastDeviceStateDataGridViewTextBoxColumn.HeaderText = "Last device state";
+            this.lastDeviceStateDataGridViewTextBoxColumn.Name = "lastDeviceStateDataGridViewTextBoxColumn";
+            this.lastDeviceStateDataGridViewTextBoxColumn.ReadOnly = true;
+            this.lastDeviceStateDataGridViewTextBoxColumn.Width = 104;
+            // 
+            // gUIDDataGridViewTextBoxColumn
+            // 
+            this.gUIDDataGridViewTextBoxColumn.DataPropertyName = "GUID";
+            this.gUIDDataGridViewTextBoxColumn.HeaderText = "GUID";
+            this.gUIDDataGridViewTextBoxColumn.Name = "gUIDDataGridViewTextBoxColumn";
+            this.gUIDDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // suplaDeviceBindingSource
+            // 
+            this.suplaDeviceBindingSource.DataSource = typeof(SuplaUpdateTool.SuplaDevice);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -483,6 +483,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MinimumSize = new System.Drawing.Size(530, 415);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Supla Update Tool";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -490,7 +491,6 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.suplaDeviceBindingSource)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -498,6 +498,7 @@
             this.groupBox1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.suplaDeviceBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
