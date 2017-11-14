@@ -29,6 +29,8 @@ using System.Runtime.InteropServices;
 using System.Net.Http;
 using HtmlAgilityPack;
 using System.Threading;
+using Microsoft.Win32;
+
 
 namespace SuplaUpdateTool
 {
@@ -40,9 +42,12 @@ namespace SuplaUpdateTool
         private CancellationTokenSource cancelationSource = null;
         private readonly SynchronizationContext synchronizationContext;
 
+        const string regKeyName = @"HKEY_CURRENT_USER\Software\SUPLA.ORG\UpdateTool\Settings";
+
         public MainForm()
         {
             InitializeComponent();
+            LoadSettings();
             synchronizationContext = SynchronizationContext.Current;
         }
 
@@ -242,7 +247,7 @@ namespace SuplaUpdateTool
 
             synchronizationContext.Post(new SendOrPostCallback(o =>
             {
-                progressBar1.Style = ProgressBarStyle.Continuous;
+                toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
                 btnStop.Enabled = false;
                 btnFind.Enabled = true;
             }), null);
@@ -301,7 +306,8 @@ namespace SuplaUpdateTool
                 dataGridView1.DataSource = devices;
                 btnFind.Enabled = true;
                 btnUpdate.Enabled = devices.Count() > 0;
-                progressBar1.Style = ProgressBarStyle.Continuous;
+                toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
+                toolStripStatusLabel1.Text = "Device count: " + devices.Count().ToString();
                 btnStop.Enabled = false;
             }), null);
 
@@ -325,7 +331,7 @@ namespace SuplaUpdateTool
             btnUpdate.Enabled = false;
             btnFind.Enabled = false;
             btnStop.Enabled = true;
-            progressBar1.Style = ProgressBarStyle.Marquee;
+            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
 
             Task<int> task = Task.Run(() => doUpdate(cancelationSource.Token), cancelationSource.Token);
         }
@@ -334,14 +340,9 @@ namespace SuplaUpdateTool
         {
             btnFind.Enabled = false;
             btnStop.Enabled = true;
-            progressBar1.Style = ProgressBarStyle.Marquee;
+            toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
             cancelTasks();
             Task<int> task = Task.Run(() => findDevices(cancelationSource.Token), cancelationSource.Token);
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -349,14 +350,77 @@ namespace SuplaUpdateTool
             Close();
         }
 
-        private void suplaDeviceBindingSource_CurrentChanged(object sender, EventArgs e)
+   
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Form2 form = new Form2();
+            form.ShowDialog();
         }
 
-        private void suplaDeviceBindingSource_CurrentChanged_1(object sender, EventArgs e)
+        private void settings_Changed(object sender, EventArgs e)
+        {
+            btnUndo.Enabled = true;
+            btnSave.Enabled = true;
+        }
+
+        private void btnUndo_Click(object sender, EventArgs e)
+        {
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            btnSave.Enabled = false;
+            btnUndo.Enabled = false;
+
+            string group = @"\WiFi";
+            edWifiName.Text = (string)Registry.GetValue(regKeyName + group, "SSID", "");
+
+            string pwd = (string)Registry.GetValue(regKeyName + group, "PWD", "");
+            if ( pwd == null )
+            {
+                edWiFiPwd.Text = "";
+            } 
+            else
+            {
+                edWiFiPwd.Text = Encoding.UTF8.GetString(Convert.FromBase64String(pwd));
+            }
+
+            group = @"\Supla";
+
+            edSuplaServer.Text = (string)Registry.GetValue(regKeyName + group, "Server", "");
+            edSuplaEmail.Text = (string)Registry.GetValue(regKeyName + group, "Email", "");
+            edSuplaLocationId.Text = (string)Registry.GetValue(regKeyName + group, "LocationId", "");
+
+            pwd = (string)Registry.GetValue(regKeyName + group, "LocationPwd", "");
+            if (pwd == null)
+            {
+                edSuplaLocationPwd.Text = "";
+            }
+            else
+            {
+                edSuplaLocationPwd.Text = Encoding.UTF8.GetString(Convert.FromBase64String(pwd));
+            }
+        }
+
+
+        private void btnSave_Click(object sender, EventArgs e)
         {
 
+            btnSave.Enabled = false;
+            btnUndo.Enabled = false;
+
+            string group = @"\WiFi";
+            
+            Registry.SetValue(regKeyName+group, "SSID", edWifiName.Text);
+            Registry.SetValue(regKeyName +group, "PWD", Convert.ToBase64String(Encoding.UTF8.GetBytes(edWiFiPwd.Text)));
+
+            group = @"\Supla";
+
+            Registry.SetValue(regKeyName + group, "Server", edSuplaServer.Text);
+            Registry.SetValue(regKeyName + group, "Email", edSuplaEmail.Text);
+            Registry.SetValue(regKeyName + group, "LocationId", edSuplaLocationId.Text);
+            Registry.SetValue(regKeyName + group, "LocationPwd", Convert.ToBase64String(Encoding.UTF8.GetBytes(edSuplaLocationPwd.Text)));
         }
     }
 }
