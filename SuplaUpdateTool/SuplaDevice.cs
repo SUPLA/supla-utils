@@ -32,19 +32,21 @@ namespace SuplaUpdateTool
 
     class SuplaDevice
     {
-        public List<FormField> fields = new List<FormField>();
+        public List<FormField> Fields = new List<FormField>();
 
-        public WlanClient.WlanInterface wlanIface;
-        public Wlan.WlanAvailableNetwork network;
-        public string ssid;
+        public WlanClient.WlanInterface WlanIface;
+        public Wlan.WlanAvailableNetwork Network;
+        public string SSID { set; get; }
+        public string State { set; get; }
 
-        public string name;
-        public string lastState;
-        public string firmware;
-        public string guid;
-        public string mac;
+        public string Name { set; get; }
+        public string LastDeviceState { set; get; }
+        public string Firmware { set; get; }
+        public string NewFirmware { set; get; }
+        public string GUID { set; get; }
+        public string MAC;
 
-        public Boolean authByEmail;
+        public Boolean AuthByEmail;
 
 
     }

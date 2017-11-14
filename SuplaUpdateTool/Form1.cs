@@ -28,15 +28,22 @@ using static NativeWifi.Wlan;
 using System.Runtime.InteropServices;
 using System.Net.Http;
 using HtmlAgilityPack;
+using System.Threading;
 
 namespace SuplaUpdateTool
 {
 
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
-        public Form1()
+
+        private List<SuplaDevice> devices = new List<SuplaDevice>();
+        private CancellationTokenSource cancelationSource = null;
+        private readonly SynchronizationContext synchronizationContext;
+
+        public MainForm()
         {
             InitializeComponent();
+            synchronizationContext = SynchronizationContext.Current;
         }
 
         string GetStringForSSID(Wlan.Dot11Ssid ssid)
@@ -51,77 +58,82 @@ namespace SuplaUpdateTool
         }
 
 
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            btnStop.Enabled = false;
+            cancelTasks();
+        }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void dataGridUpdate()
+        {
+            synchronizationContext.Post(new SendOrPostCallback(o =>
+            {
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = devices;
+
+            }), null);
+        }
+
+        private int doUpdate(CancellationToken cancellatonToken)
         {
 
-            List<SuplaDevice> devices = new List<SuplaDevice>();
 
-            WlanClient client = new WlanClient();
-           
-            foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
+            synchronizationContext.Post(new SendOrPostCallback(o =>
             {
- 
-                Wlan.WlanAvailableNetwork[] networks = wlanIface.GetAvailableNetworkList(0);
-                foreach (Wlan.WlanAvailableNetwork network in networks)
+                foreach (SuplaDevice device in devices)
                 {
-                    string ssid = GetStringForSSID(network.dot11Ssid);
+                    device.State = "Waiting for connect...";
+                }
 
-                    if ( isSuplaNetworkName(ssid) )
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = devices;
+
+            }), null);
+
+            foreach (SuplaDevice device in devices)
+            {
+
+                try
+                {
+
+                    string profileXml = string.Format("<?xml version=\"1.0\"?><WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\"><name>{0}</name><SSIDConfig><SSID><name>{0}</name></SSID></SSIDConfig><connectionType>ESS</connectionType><MSM><security><authEncryption><authentication>open</authentication><encryption>none</encryption><useOneX>false</useOneX></authEncryption></security></MSM></WLANProfile>", device.SSID);
+
+                    device.WlanIface.Disconnect();
+                    System.Threading.Thread.Sleep(500);
+                    device.WlanIface.Connect(Wlan.WlanConnectionMode.TemporaryProfile, Wlan.Dot11BssType.Any, IntPtr.Zero, profileXml);
+
+                    Boolean Connected = false;
+
+                    DateTime now = new DateTime();
+                    while (true)
                     {
-                        Console.WriteLine("Found WEP network with SSID {0}.", ssid);
 
-                        SuplaDevice device = new SuplaDevice();
-                        device.network = network;
-                        device.wlanIface = wlanIface;
-                        device.ssid = ssid;
-                        devices.Add(device);
+                        cancellatonToken.ThrowIfCancellationRequested();
+
+                        System.Threading.Thread.Sleep(1000);
+
+                        try
+                        {
+                            if (device.WlanIface.CurrentConnection.profileName.Equals(device.SSID)
+                                && device.WlanIface.CurrentConnection.isState == WlanInterfaceState.Connected)
+                            {
+                                Connected = true;
+                                break;
+                            }
+
+                            if ((now - new DateTime()).TotalSeconds > 5)
+                            {
+                                break;
+                            }
+                        } catch (Win32Exception exception) { };
 
                     }
 
-                }
-
-            }
-
-
-            foreach(SuplaDevice device in devices)
-            {
-                string profileXml = string.Format("<?xml version=\"1.0\"?><WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\"><name>{0}</name><SSIDConfig><SSID><name>{0}</name></SSID></SSIDConfig><connectionType>ESS</connectionType><MSM><security><authEncryption><authentication>open</authentication><encryption>none</encryption><useOneX>false</useOneX></authEncryption></security></MSM></WLANProfile>", device.ssid);
-
-                device.wlanIface.Disconnect();
-                System.Threading.Thread.Sleep(500);              
-                device.wlanIface.Connect(Wlan.WlanConnectionMode.TemporaryProfile, Wlan.Dot11BssType.Any, IntPtr.Zero, profileXml);
-
-                bool Connected = false;
-                DateTime now = new DateTime();
-   
-                while(true)
-                {
-                    
-                    System.Threading.Thread.Sleep(1000);
-
-                    try
+                    if ( !Connected )
                     {
-                        if (device.wlanIface.CurrentConnection.profileName.Equals(device.ssid)
-                            && device.wlanIface.CurrentConnection.isState == WlanInterfaceState.Connected )
-                        {
-                            Connected = true;
-                            break;
-                        }
+                        throw new Exception("Connection timeout");
+                    }
 
-                        if ((now - new DateTime()).TotalSeconds > 5)
-                        {
-                            break;
-                        }
-
-                    } catch(Win32Exception exception) { };
-                    
-                }
-
-                Console.WriteLine("Connected {0}.", Connected);
-
-                if ( Connected )
-                {
                     HttpClient httpclient = new HttpClient();
                     Task<string> task = httpclient.GetStringAsync("http://192.168.4.1");
                     task.Wait();
@@ -134,7 +146,7 @@ namespace SuplaUpdateTool
                         throw new Exception("Html parse error");
                     }
 
-                    if (htmlDoc.DocumentNode == null )
+                    if (htmlDoc.DocumentNode == null)
                     {
                         throw new Exception("DocumentNode is null");
                     }
@@ -146,13 +158,12 @@ namespace SuplaUpdateTool
                         throw new Exception("Unsupported device");
                     }
 
-                    foreach(HtmlNode input in inputs)
+                    foreach (HtmlNode input in inputs)
                     {
                         FormField field = new FormField();
                         field.name = input.Attributes["name"] == null ? "" : input.Attributes["name"].Value;
                         field.value = input.Attributes["value"] == null ? "" : input.Attributes["value"].Value;
-
-                        device.fields.Add(field);
+                        device.Fields.Add(field);
                     }
 
                     IEnumerable<HtmlNode> selects = htmlDoc.DocumentNode.Descendants("select");
@@ -161,50 +172,190 @@ namespace SuplaUpdateTool
                     {
                         FormField field = new FormField();
                         field.name = select.Attributes["name"] == null ? "" : select.Attributes["name"].Value;
-                        
 
                         IEnumerable<HtmlNode> options = select.Descendants("option").Where(n => n.Attributes["selected"] != null);
-                        
-                        if ( options != null && options.Count() == 1 )
+
+                        if (options != null && options.Count() == 1)
                         {
                             HtmlNode option = options.First();
                             field.value = option.Attributes["value"] == null ? "" : option.Attributes["value"].Value;
                         }
 
-                        device.fields.Add(field);
+                        device.Fields.Add(field);
+
                     }
 
-                    var upd = device.fields.Where(n => n.name == "upd");
+                    var upd = device.Fields.Where(n => n.name == "upd");
 
-                    if (upd != null && upd.Count() != 1 )
+                    if (upd != null && upd.Count() != 1)
                     {
                         throw new Exception("No update capabilities");
                     }
-
-                    var sid = device.fields.Where(n => n.name == "sid");
-                    var wpw = device.fields.Where(n => n.name == "wpw");
-                    var svr = device.fields.Where(n => n.name == "svr");
+                    
+                    var sid = device.Fields.Where(n => n.name == "sid");
+                    var wpw = device.Fields.Where(n => n.name == "wpw");
+                    var svr = device.Fields.Where(n => n.name == "svr");
 
                     string pattern = @"<h1>(.*)<\/h1><span>LAST STATE: (.*)<br>Firmware: (.*)<br>GUID: (.*)<br>MAC: (.*)<\/span>";
                     Match match = Regex.Match(task.Result, pattern);
 
-                    if ( match.Groups.Count != 6 || sid.Count() != 1 || wpw.Count() != 1 || svr.Count() != 1 )
+                    if (match.Groups.Count != 6 || sid.Count() != 1 || wpw.Count() != 1 || svr.Count() != 1)
                     {
                         throw new Exception("Unsupported device");
                     }
-                    
-                    device.name = match.Groups[1].Value.Trim();
-                    device.lastState = match.Groups[2].Value.Trim();
-                    device.firmware = match.Groups[3].Value.Trim();
-                    device.guid = match.Groups[4].Value.Trim();
-                    device.mac = match.Groups[5].Value.Trim();
 
 
+                    synchronizationContext.Post(new SendOrPostCallback(o =>
+                    {
 
+                        device.Name = match.Groups[1].Value.Trim();
+                        device.LastDeviceState = match.Groups[2].Value.Trim();
+                        device.Firmware = match.Groups[3].Value.Trim();
+                        device.GUID = match.Groups[4].Value.Trim();
+                        device.MAC = match.Groups[5].Value.Trim();
+
+                        device.State = "Waiting for restart...";
+
+                    }), null);
+
+                    device.WlanIface.Disconnect();
+
+                    cancellatonToken.ThrowIfCancellationRequested();
+
+                }
+                catch (Exception exception)
+                {
+                    device.State = exception.Message;
                 }
 
 
+                synchronizationContext.Post(new SendOrPostCallback(o =>
+                {
+
+                    dataGridView1.DataSource = null;
+                    dataGridView1.DataSource = devices;
+
+                }), null);
+
+
             }
+
+            synchronizationContext.Post(new SendOrPostCallback(o =>
+            {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+                btnStop.Enabled = false;
+                btnFind.Enabled = true;
+            }), null);
+
+
+            return 1;
+        }
+
+        private int findDevices(CancellationToken cancellationToken)
+        {
+
+            synchronizationContext.Post(new SendOrPostCallback(o =>
+            {
+
+                devices.Clear();
+                dataGridView1.DataSource = null;
+
+            }), null);
+
+
+            WlanClient client = new WlanClient();
+
+            foreach (WlanClient.WlanInterface wlanIface in client.Interfaces)
+            {
+
+                Wlan.WlanAvailableNetwork[] networks = wlanIface.GetAvailableNetworkList(0);
+                foreach (Wlan.WlanAvailableNetwork network in networks)
+                {
+                    string ssid = GetStringForSSID(network.dot11Ssid);
+
+                    if (isSuplaNetworkName(ssid))
+                    {
+
+                        if (cancellationToken.IsCancellationRequested) break;
+
+                        synchronizationContext.Post(new SendOrPostCallback(o =>
+                        {
+                            SuplaDevice device = new SuplaDevice();
+                            device.Network = network;
+                            device.WlanIface = wlanIface;
+                            device.SSID = ssid;
+
+                            devices.Add(device);
+
+                        }), null);
+
+                    }
+
+                }
+
+                
+            }
+
+            synchronizationContext.Post(new SendOrPostCallback(o =>
+            {
+                dataGridView1.DataSource = devices;
+                btnFind.Enabled = true;
+                btnUpdate.Enabled = devices.Count() > 0;
+                progressBar1.Style = ProgressBarStyle.Continuous;
+                btnStop.Enabled = false;
+            }), null);
+
+            return 1;
+        }
+
+        private void cancelTasks()
+        {
+            if (cancelationSource != null)
+            {
+                cancelationSource.Cancel();
+            }
+
+            cancelationSource = new CancellationTokenSource();
+        }
+
+
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            btnUpdate.Enabled = false;
+            btnFind.Enabled = false;
+            btnStop.Enabled = true;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+
+            Task<int> task = Task.Run(() => doUpdate(cancelationSource.Token), cancelationSource.Token);
+        }
+
+        private void btnFind_Click(object sender, EventArgs e)
+        {
+            btnFind.Enabled = false;
+            btnStop.Enabled = true;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            cancelTasks();
+            Task<int> task = Task.Run(() => findDevices(cancelationSource.Token), cancelationSource.Token);
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void suplaDeviceBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void suplaDeviceBindingSource_CurrentChanged_1(object sender, EventArgs e)
+        {
 
         }
     }
