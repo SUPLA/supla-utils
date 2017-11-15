@@ -36,7 +36,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnCheck = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.NewFirmware = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnUpdate = new System.Windows.Forms.Button();
@@ -107,7 +107,7 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.statusStrip1);
-            this.tabPage1.Controls.Add(this.button1);
+            this.tabPage1.Controls.Add(this.btnCheck);
             this.tabPage1.Controls.Add(this.dataGridView1);
             this.tabPage1.Controls.Add(this.btnUpdate);
             this.tabPage1.Controls.Add(this.btnFind);
@@ -142,15 +142,16 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(88, 17);
             this.toolStripStatusLabel1.Text = "Device count: 0";
             // 
-            // button1
+            // btnCheck
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(170, 7);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(166, 55);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Check and clean";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnCheck.Enabled = false;
+            this.btnCheck.Location = new System.Drawing.Point(170, 7);
+            this.btnCheck.Name = "btnCheck";
+            this.btnCheck.Size = new System.Drawing.Size(166, 55);
+            this.btnCheck.TabIndex = 6;
+            this.btnCheck.Text = "Check and clean";
+            this.btnCheck.UseVisualStyleBackColor = true;
+            this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
             // 
             // dataGridView1
             // 
@@ -516,7 +517,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnCheck;
         private System.Windows.Forms.BindingSource suplaDeviceBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn sSIDDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn stateDataGridViewTextBoxColumn;
