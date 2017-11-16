@@ -273,6 +273,7 @@ namespace SuplaUpdateTool
 
         public Boolean Clean;
         public Boolean Updated;
+        public Boolean TryConfig;
 
         public static string GetStringForSSID(Wlan.Dot11Ssid ssid)
         {

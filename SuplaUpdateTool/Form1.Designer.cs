@@ -38,7 +38,6 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnCheck = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.NewFirmware = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnFind = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -63,6 +62,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewFirmware = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sSIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.stateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -174,15 +174,6 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(887, 333);
             this.dataGridView1.TabIndex = 1;
-            // 
-            // NewFirmware
-            // 
-            this.NewFirmware.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.NewFirmware.DataPropertyName = "NewFirmware";
-            this.NewFirmware.HeaderText = "New Firmware";
-            this.NewFirmware.Name = "NewFirmware";
-            this.NewFirmware.ReadOnly = true;
-            this.NewFirmware.Width = 91;
             // 
             // btnUpdate
             // 
@@ -416,6 +407,15 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // NewFirmware
+            // 
+            this.NewFirmware.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.NewFirmware.DataPropertyName = "NewFirmware";
+            this.NewFirmware.HeaderText = "New Firmware";
+            this.NewFirmware.Name = "NewFirmware";
+            this.NewFirmware.ReadOnly = true;
+            this.NewFirmware.Width = 91;
+            // 
             // sSIDDataGridViewTextBoxColumn
             // 
             this.sSIDDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -485,7 +485,7 @@
             this.MinimumSize = new System.Drawing.Size(530, 415);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Supla Update Tool";
+            this.Text = "Supla Update Tool v1.0";
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -519,13 +519,6 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.Button btnCheck;
         private System.Windows.Forms.BindingSource suplaDeviceBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sSIDDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn stateDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn firmwareDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NewFirmware;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lastDeviceStateDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gUIDDataGridViewTextBoxColumn;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox edWiFiPwd;
         private System.Windows.Forms.TextBox edWifiName;
@@ -547,6 +540,13 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sSIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn stateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn firmwareDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NewFirmware;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lastDeviceStateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn gUIDDataGridViewTextBoxColumn;
     }
 }
 

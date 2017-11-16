@@ -44,7 +44,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(371, 19);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Supla Update Tool";
+            this.label1.Text = "Supla Update Tool v1.0";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label2

@@ -91,7 +91,7 @@ namespace SuplaUpdateTool
             foreach (SuplaDevice device in devices)
                 if (!device.Clean)
                 {
-                    device.State = "Waiting for connect...";
+                    device.State = "Setting the connection...";
                 }
 
             synchronizationContext.Post(new SendOrPostCallback(o =>
@@ -102,6 +102,7 @@ namespace SuplaUpdateTool
             }), null);
 
             int updateCount = 0;
+            int cleanCount = 0;
 
             foreach (SuplaDevice device in devices)
             {
@@ -122,8 +123,8 @@ namespace SuplaUpdateTool
 
                     device.Load();
 
-                    device.Firmware = OldFirmware;
                     device.NewFirmware = device.Firmware;
+                    device.Firmware = OldFirmware;
 
                     device.Fields.Clear();
 
@@ -142,18 +143,18 @@ namespace SuplaUpdateTool
                     {
                         if (device.Firmware.Equals(device.NewFirmware))
                         {
-                            device.State = "!Not updated - Clean";
+                            device.State = "!Not updated but cleaned";
                         }
                         else
                         {
                             device.Updated = true;
-                            device.State = "Updated and clean";
+                            device.State = "Updated and cleaned";
                         }
 
                     }
                     else
                     {
-                        throw new Exception("Can't clean device configuration");
+                        throw new Exception("Device configuration cannot be cleaned!");
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
@@ -167,6 +168,11 @@ namespace SuplaUpdateTool
                 if ( device.Updated )
                 {
                     updateCount++;
+                }
+
+                if ( device.Clean )
+                {
+                    cleanCount++;
                 }
 
                 synchronizationContext.Post(new SendOrPostCallback(o =>
@@ -185,7 +191,7 @@ namespace SuplaUpdateTool
                 toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
                 btnStop.Enabled = false;
                 btnFind.Enabled = true;
-                btnCheck.Enabled = true;
+                btnCheck.Enabled = cleanCount != devices.Count();
                 toolStripStatusLabel1.Text = "Result: " + updateCount.ToString() + "/" + devices.Count().ToString();
 
             }), null);
@@ -196,9 +202,10 @@ namespace SuplaUpdateTool
         private int doUpdate(CancellationToken cancellationToken)
         {
             foreach (SuplaDevice device in devices)
-            {
-                device.State = "Waiting for connect...";
-            }
+                if (!device.TryConfig)
+                {
+                    device.State = "Setting the connection...";
+                }
 
             synchronizationContext.Post(new SendOrPostCallback(o =>
             {
@@ -211,7 +218,7 @@ namespace SuplaUpdateTool
 
             foreach (SuplaDevice device in devices)
             {
-
+                if ( !device.TryConfig )
                 try
                 {
 
@@ -221,6 +228,8 @@ namespace SuplaUpdateTool
                     {
                         throw new Exception("Connection timeout");
                     }
+
+                    device.TryConfig = true;
 
                     device.Load();
 
@@ -263,7 +272,7 @@ namespace SuplaUpdateTool
                     }
                     else
                     {
-                        throw new Exception("Can't save device configuration");
+                        throw new Exception("Device configuration cannot be saved!");
                     }
 
 
@@ -292,6 +301,7 @@ namespace SuplaUpdateTool
             {
                 toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
                 btnStop.Enabled = false;
+                btnUpdate.Enabled = true;
                 btnFind.Enabled = true;
                 btnCheck.Enabled = configSaved;
             }), null);
