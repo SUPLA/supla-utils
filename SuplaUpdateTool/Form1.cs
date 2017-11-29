@@ -162,6 +162,7 @@ namespace SuplaUpdateTool
                 }
                 catch (Exception exception)
                 {
+                    device.Clean = false;
                     device.State = exception.Message;
                 }
 
@@ -281,6 +282,7 @@ namespace SuplaUpdateTool
                 }
                 catch (Exception exception)
                 {
+                    device.TryConfig = false;
                     device.State = exception.Message;
                 }
 
