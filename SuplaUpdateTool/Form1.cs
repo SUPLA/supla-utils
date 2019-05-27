@@ -85,7 +85,7 @@ namespace SuplaUpdateTool
         }
 
 
-        private int checkAndClean(CancellationToken cancellationToken)
+        private int checkAndClean(CancellationToken cancellationToken, bool doNotClean)
         {
 
             foreach (SuplaDevice device in devices)
@@ -126,37 +126,54 @@ namespace SuplaUpdateTool
                     device.NewFirmware = device.Firmware;
                     device.Firmware = OldFirmware;
 
-                    device.Fields.Clear();
-
-                    device.Fields.Add(new FormField() { name = "sid", value = "" });
-                    device.Fields.Add(new FormField() { name = "wpw", value = "" });
-                    device.Fields.Add(new FormField() { name = "svr", value = "" });
-                    device.Fields.Add(new FormField() { name = "eml", value = "" });
-                    device.Fields.Add(new FormField() { name = "lid", value = "0" });
-                    device.Fields.Add(new FormField() { name = "lid", value = "pwd" });
-
-                    string result = device.postFields();
-
-                    device.WlanIface.Disconnect();
-
-                    if (result.IndexOf("Data saved", StringComparison.CurrentCultureIgnoreCase) >= 0)
-                    {
-                        if (device.Firmware.Equals(device.NewFirmware))
+                        if (doNotClean)
                         {
-                            device.State = "!Not updated but cleaned";
-                        }
-                        else
+                            if (device.Firmware.Equals(device.NewFirmware))
+                            {
+                                device.State = "!Not updated";
+                            }
+                            else
+                            {
+                                device.Updated = true;
+                                device.State = "Updated";
+                            }
+
+                        } else
                         {
-                            device.Updated = true;
-                            device.State = "Updated and cleaned";
+                            device.Fields.Clear();
+
+                            device.Fields.Add(new FormField() { name = "sid", value = "" });
+                            device.Fields.Add(new FormField() { name = "wpw", value = "" });
+                            device.Fields.Add(new FormField() { name = "svr", value = "" });
+                            device.Fields.Add(new FormField() { name = "eml", value = "" });
+                            device.Fields.Add(new FormField() { name = "lid", value = "0" });
+                            device.Fields.Add(new FormField() { name = "lid", value = "pwd" });
+
+                            string result = device.postFields();
+
+                            device.WlanIface.Disconnect();
+
+                            if (result.IndexOf("Data saved", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            {
+                                if (device.Firmware.Equals(device.NewFirmware))
+                                {
+                                    device.State = "!Not updated but cleaned";
+                                }
+                                else
+                                {
+                                    device.Updated = true;
+                                    device.State = "Updated and cleaned";
+                                }
+
+                            }
+                            else
+                            {
+                                throw new Exception("Device configuration cannot be cleaned!");
+                            }
                         }
 
-                    }
-                    else
-                    {
-                        throw new Exception("Device configuration cannot be cleaned!");
-                    }
-
+                 
+                
                     cancellationToken.ThrowIfCancellationRequested();
 
                 }
@@ -192,7 +209,8 @@ namespace SuplaUpdateTool
                 toolStripProgressBar1.Style = ProgressBarStyle.Continuous;
                 btnStop.Enabled = false;
                 btnFind.Enabled = true;
-                btnCheck.Enabled = cleanCount != devices.Count();
+                btnCheckAndClean.Enabled = cleanCount != devices.Count();
+                btnCheck.Enabled = btnCheckAndClean.Enabled;
                 toolStripStatusLabel1.Text = "Result: " + updateCount.ToString() + "/" + devices.Count().ToString();
 
             }), null);
@@ -305,7 +323,8 @@ namespace SuplaUpdateTool
                 btnStop.Enabled = false;
                 btnUpdate.Enabled = true;
                 btnFind.Enabled = true;
-                btnCheck.Enabled = configSaved;
+                btnCheckAndClean.Enabled = configSaved;
+                btnCheck.Enabled = btnCheckAndClean.Enabled;
             }), null);
 
 
@@ -395,15 +414,17 @@ namespace SuplaUpdateTool
             cancelationSource = new CancellationTokenSource();
         }
 
-        private void btnCheck_Click(object sender, EventArgs e)
+        private void btnCheckAndClean_Click(object sender, EventArgs e)
         {
             btnUpdate.Enabled = false;
             btnFind.Enabled = false;
             btnStop.Enabled = true;
-            btnCheck.Enabled = false;
+            btnCheckAndClean.Enabled = false;
+            btnCheck.Enabled = btnCheckAndClean.Enabled;
             toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
 
-            Task<int> task = Task.Run(() => checkAndClean(cancelationSource.Token), cancelationSource.Token);
+            Task<int> task = Task.Run(() => 
+            checkAndClean(cancelationSource.Token, sender == btnCheck), cancelationSource.Token);
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -411,7 +432,8 @@ namespace SuplaUpdateTool
             btnUpdate.Enabled = false;
             btnFind.Enabled = false;
             btnStop.Enabled = true;
-            btnCheck.Enabled = false;
+            btnCheckAndClean.Enabled = false;
+            btnCheck.Enabled = btnCheckAndClean.Enabled;
             toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
 
             Task<int> task = Task.Run(() => doUpdate(cancelationSource.Token), cancelationSource.Token);
@@ -421,7 +443,8 @@ namespace SuplaUpdateTool
         {
             btnFind.Enabled = false;
             btnStop.Enabled = true;
-            btnCheck.Enabled = false;
+            btnCheckAndClean.Enabled = false;
+            btnCheck.Enabled = btnCheckAndClean.Enabled;
             toolStripProgressBar1.Style = ProgressBarStyle.Marquee;
             cancelTasks();
             Task<int> task = Task.Run(() => findDevices(cancelationSource.Token), cancelationSource.Token);
@@ -505,6 +528,9 @@ namespace SuplaUpdateTool
             Registry.SetValue(regKeyName + group, "LocationPwd", Convert.ToBase64String(Encoding.UTF8.GetBytes(edSuplaLocationPwd.Text)));
         }
 
+        private void btnCheck_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
