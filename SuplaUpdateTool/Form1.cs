@@ -258,9 +258,20 @@ namespace SuplaUpdateTool
                     var svr = device.Fields.Where(n => n.name == "svr");
 
                     upd.First().value = "1";
-                    sid.First().value = edWifiName.Text.Trim();
-                    wpw.First().value = edWiFiPwd.Text.Trim();
-                    svr.First().value = edSuplaServer.Text.Trim();
+                    if (edWifiName.Text.Trim().Length > 0)
+                    {
+                        sid.First().value = edWifiName.Text.Trim();
+                    }
+
+                    if (edWiFiPwd.Text.Trim().Length > 0)
+                    {
+                        wpw.First().value = edWiFiPwd.Text.Trim();
+                    }
+
+                    if (edSuplaServer.Text.Trim().Length > 0)
+                    {
+                        svr.First().value = edSuplaServer.Text.Trim();
+                    }
 
                     var eml = device.Fields.Where(n => n.name == "eml");
                     var lid = device.Fields.Where(n => n.name == "lid");
@@ -268,12 +279,24 @@ namespace SuplaUpdateTool
 
                     if (eml != null && eml.Count() == 1)
                     {
-                        eml.First().value = edSuplaEmail.Text.Trim();
+                            if (edSuplaEmail.Text.Trim().Length > 0)
+                            {
+                                eml.First().value = edSuplaEmail.Text.Trim();
+                            }
+                        
                     }
                     else if (lid != null && lid.Count() == 1 && pwd != null && pwd.Count() == 1)
                     {
-                        lid.First().value = edSuplaLocationId.Text.Trim();
-                        pwd.First().value = edSuplaLocationPwd.Text.Trim();
+                            if (edSuplaLocationId.Text.Trim().Length > 0)
+                            {
+                                lid.First().value = edSuplaLocationId.Text.Trim();
+                            }
+                        
+                            if (edSuplaLocationPwd.Text.Trim().Length > 0)
+                            {
+                                pwd.First().value = edSuplaLocationPwd.Text.Trim();
+                            }
+                        
                     }
                     else
                     {

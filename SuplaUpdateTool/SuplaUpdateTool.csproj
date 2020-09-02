@@ -25,7 +25,7 @@
     <PublisherName>AC SOFTWARE SP. Z O.O.</PublisherName>
     <WebPage>publish.htm</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -51,10 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>0E6EACAB51BA2ED104C8F50CFF5ADE8529251970</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>B48F444B9B8C2ABDCB21D58A64FF16A2399CFD63</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>SuplaUpdateTool_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>SuplaUpdateTool_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -70,7 +70,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>SuplaUpdateTool_1_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>SuplaUpdateTool_2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.11.4.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
@@ -133,6 +133,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="SuplaUpdateTool_1_TemporaryKey.pfx" />
+    <None Include="SuplaUpdateTool_2_TemporaryKey.pfx" />
     <None Include="SuplaUpdateTool_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
