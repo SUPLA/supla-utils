@@ -29,22 +29,19 @@ from .reporter import Reporter
 def main(android: PurePosixPath, ios: PurePosixPath, out: PurePosixPath):
     logging.basicConfig(format='%(asctime)-15s %(name)-10s %(message)s', 
                         level=logging.DEBUG)
-    if android and ios:
-        logging.error("simultaeous processing of iOS and Android resources is not supported")
-        exit(1)
     all_assets = list()
-    if android:
-        logging.info("using android %s", android)
-        scanner = AndroidScanner(android)
-        scanner.set_assets(all_assets)
-        scanner.scan()
-        Reporter(all_assets, 'android').generate(out)
     if ios:
         logging.info("using ios %s", ios)
         scanner = IOSScanner(ios)
         scanner.set_assets(all_assets)
         scanner.scan()
-        Reporter(all_assets, 'ios').generate(out)
+    if android:
+        logging.info("using android %s", android)
+        scanner = AndroidScanner(android)
+        scanner.set_assets(all_assets)
+        scanner.scan()
+    if len(all_assets) > 0:
+        Reporter(all_assets, 'all').generate(out)
 
     
     

@@ -41,15 +41,18 @@ class Reporter:
                 title = 'en'
                 
             ws = wb.create_sheet(title)
-            ws.append(["Key", "English", "Translation"])
+            ws.append(["iOS Key", "Android Key", "English", "Translation"])
             for a in self._assets:
-                if self._mode == 'ios':
-                    if(a.ios_translations.get(self._reference_lang, None) and
-                       a.ios_translations.get(l, None) == None):
-                        ws.append([a.ios_key, a.ios_translations.get('Base', ''),  ''])
-                elif self._mode == 'android':
-                    if(a.android_translations.get(self._reference_lang, None) and 
-                       a.android_translations.get(l, None) == None):
-                        ws.append([a.android_key, a.android_translations.get('', ''), ''])
+                android_trans = a.android_translations.get(l, None)
+                ios_trans = a.ios_translations.get(l, None)
+
+                if(a.ios_translations.get(self._reference_lang, None) and
+                   (android_trans == None) or
+                    (ios_trans == None)):
+                    base_text = a.ios_translations.get('Base', '')
+                    if (not base_text) or (len(base_text) == 0):
+                        base_text = a.android_translations.get('', a.ios_key)
+
+                    ws.append([a.ios_key, a.android_key, base_text,  ''])
 
         wb.save(out)
