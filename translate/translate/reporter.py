@@ -46,7 +46,8 @@ class Reporter:
                 android_trans = a.android_translations.get(l, None)
                 ios_trans = a.ios_translations.get(l, None)
 
-                if(a.ios_translations.get(self._reference_lang, None) and
+                if((a.ios_translations.get(self._reference_lang, None) or
+                    a.android_translations.get(self._reference_lang, None)) and
                    (android_trans == None) or
                     (ios_trans == None)):
                     base_text = a.ios_translations.get('Base', '')
