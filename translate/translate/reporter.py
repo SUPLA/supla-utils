@@ -38,33 +38,57 @@ class Reporter:
             langs |= set(a.android_translations.keys())
 
         for l in sorted(langs):
-            if l == self._reference_lang:
+            base_texts = list()
+            if l == self._reference_lang or l == 'Base':
                 continue
             if l:
                 title = l
             else:
-                title = 'en'
+                continue;
                 
             ws = wb.create_sheet(title)
-            ws.append(["iOS Key", "Android Key", "English", "Translation"])
+            logger.info("Start processing language %s", title)
+            ws.append(["English", "Translation"])
             for a in self._assets:
                 
                 android_trans = a.android_translations.get(l, None)
                 ios_trans = a.ios_translations.get(l, None)
+                ios_ref = a.ios_translations.get(self._reference_lang, None)
+                and_ref = a.android_translations.get(self._reference_lang, None)
+                ios_en = a.ios_translations.get('Base', a.ios_translations.get('en', ''))
+                if ios_en == '':
+                    ios_en = a.ios_key
+                and_en = a.android_translations.get('en', None)
                 
                 logger.debug("asset %s/%s has reference translation: %s/%s",
-                             a.ios_key, a.android_key, a.ios_translations.get(self._reference_lang, None), a.android_translations.get(self._reference_lang, None))
-                if(not a.ios_translations.get(self._reference_lang, None) and
-                   not a.android_translations.get(self._reference_lang, None)):
+                             a.ios_key, a.android_key, ios_ref, and_ref)
+                logger.debug("asset %s/%s has en translation: %s/%s",
+                             a.ios_key, a.android_key, ios_en, and_en)
+                logger.debug("asset %s/%s has %s translation: %s/%s",
+                             a.ios_key, a.android_key, l, ios_trans, android_trans)
+                if(not ios_ref and not and_ref):
                     logger.info("skipping [%s/%s] because it's not translated to reference language", a.ios_key, a.android_key)
                     continue
 
-                logger.debug("working on %s/%s")
+                if(ios_trans or android_trans):
+                    logger.info("skipping [%s/%s] because it's already translated", a.ios_key, a.android_key)
+                    continue
+
+                if ((a.ios_translations.get(self._reference_lang, "") ==
+                    ios_en) or
+                    (a.android_translations.get(self._reference_lang, "") ==
+                    and_en)):
+                    logger.info("skipping [%s/%s] because translation looks same as original")
+                    continue
+
+                logger.debug("working on %s/%s", a.ios_key, a.android_key)
                 if(not android_trans or not ios_trans):
                     base_text = a.ios_translations.get('Base', '')
                     if (not base_text) or (len(base_text) == 0):
                         base_text = a.android_translations.get('', a.ios_key)
 
-                    ws.append([a.ios_key, a.android_key, base_text,  ''])
+                    if not (base_text in base_texts):
+                        ws.append([base_text,  ''])
+                        base_texts.append(base_text)
 
         wb.save(out)

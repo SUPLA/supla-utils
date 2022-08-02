@@ -77,6 +77,8 @@ class IOSScanner(Scanner):
         for a in self.assets():
             if a.ios_key == key:
                 if lang:
+                    logger.debug('ios update %s[%s] = %s',
+                                 key, lang, value)
                     a.ios_translations[lang] = value
                 return
             if a.android_translations.get("", None) == key:
@@ -89,3 +91,7 @@ class IOSScanner(Scanner):
         a.ios_key = key
         if lang:
             a.ios_translations[lang] = value
+            logger.debug('ios add %s[%s] = %s',
+                         key, lang, value)
+            a.ios_translations[lang] = value
+            
