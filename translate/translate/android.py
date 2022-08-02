@@ -45,7 +45,8 @@ class AndroidScanner(Scanner):
             if a.android_key == name:
                 a.android_translations[lang] = val
                 return
-            elif lang == "" and val == a.ios_key:
+            elif (lang == "" and ((val == a.ios_key) or
+                  (val == a.ios_translations.get('pl', None)))):
                 a.android_key = name
                 a.android_translations[lang] = val
                 return

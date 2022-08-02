@@ -58,14 +58,12 @@ class IOSScanner(Scanner):
 #        pat1 = re.compile('"(([^"\\\]|\\\.)*)" = "(([^"\\\]|\\\.)*)"; ObjectID = "([^"]*)";')
         pat1 = re.compile('"(([^"\\\]|\\\.)*)"; ObjectID = "([^"]*)";')
         pattern = re.compile('"(([^"\\\]|\\\.)*)" = "(([^"\\\]|\\\.)*)"')
-        logger.debug(f'parsing {ln}: {p}')
         f = open(p, 'r')
         last_id = ''
         last_txt = ''
         for l in f:
             m = pat1.search(l)
             if m:
-                print(m.group(1))
                 last_id = m.group(2)
                 last_txt = m.group(1)
             match = pattern.match(l)
