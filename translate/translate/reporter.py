@@ -52,7 +52,7 @@ class Reporter:
             cols = list()
             if self._with_ios_keys:
                 cols.append("iOS key")
-            cols.append("English")
+            cols.append("Base")
             cols.append("Translation")
             ws.append(cols)
             for a in self._assets:
@@ -89,9 +89,9 @@ class Reporter:
 
                 logger.debug("working on %s/%s", a.ios_key, a.android_key)
                 if(not android_trans or not ios_trans):
-                    base_text = a.ios_translations.get('Base', '')
+                    base_text = ios_ref
                     if (not base_text) or (len(base_text) == 0):
-                        base_text = a.android_translations.get('', a.ios_key)
+                        base_text = and_ref
 
                     if not (base_text in base_texts):
                         data = list()
