@@ -24,6 +24,7 @@ class Reporter:
     def __init__(self, assets, mode):
         self._assets = assets
         self._mode = mode
+        self._with_ios_keys = True ## TODO: parametrize
         if mode == 'ios':
             self._reference_lang = 'pl'
         else:
@@ -48,7 +49,12 @@ class Reporter:
                 
             ws = wb.create_sheet(title)
             logger.info("Start processing language %s", title)
-            ws.append(["English", "Translation"])
+            cols = list()
+            if self._with_ios_keys:
+                cols.append("iOS key")
+            cols.append("English")
+            cols.append("Translation")
+            ws.append(cols)
             for a in self._assets:
                 
                 android_trans = a.android_translations.get(l, None)
@@ -88,7 +94,12 @@ class Reporter:
                         base_text = a.android_translations.get('', a.ios_key)
 
                     if not (base_text in base_texts):
-                        ws.append([base_text,  ''])
+                        data = list()
+                        if self._with_ios_keys:
+                            data.append(a.ios_key)
+                        data.append(base_text)
+                        data.append('')
+                        ws.append(data)
                         base_texts.append(base_text)
 
         wb.save(out)
