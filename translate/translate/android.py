@@ -27,6 +27,9 @@ class AndroidScanner(Scanner):
         logger.info('scan begin')
         for root,dirs,files in os.walk(self.base_path):
             for p in files:
+                dir_ = PurePath(root)
+                if dir_.name.startswith('values'):                    
+                    self._file_walk(PurePath(dir_.parent, PurePath('values'), p))
                 self._file_walk(PurePath(root, p))
 
     def _file_walk(self, p):
@@ -36,24 +39,34 @@ class AndroidScanner(Scanner):
     def _get_lang(self, dirname):
         if dirname.startswith('values'):
             (_, _, sfx) = dirname.partition('-')
+            if sfx == '':
+                sfx = 'en'
             return sfx
         else:
             raise ValueError
 
     def _add_asset(self, lang: str, name: str, val: str):
+        logger.debug("add asset %s[%s] = %s", name, lang, val)
+        done = False
         for a in self.assets():
             if a.android_key == name:
+                logger.debug("found existing asset with key %s", name)
                 a.android_translations[lang] = val
-                return
-            elif lang == "" and val == a.ios_key:
+                done = True
+            elif (lang == "en" and (val == a.ios_key or val == a.ios_translations.get('Base', None))):
+                logger.debug("assigning %s to %s because ios string matches", name, a.android_key)
                 a.android_key = name
                 a.android_translations[lang] = val
-                return
+                done = True
+        if done:
+            return
         a = self.make_asset()
         a.android_key = name
         a.android_translations[lang] = val
+        logger.debug("made new asset for %s", name)
 
     def _parse_file(self, path: PurePath):
+        logger.debug("parsing %s", path)
         lang = self._get_lang(path.parent.name)
         doc = ElementTree.parse(path)
         root = doc.getroot()
