@@ -4,10 +4,10 @@
 while read -r line
 do
   PNGFILEIN=$line.png
-  PNGFILEOUT=${line}_darkmode.png
+  PNGFILEOUT=${line}_nightmode.png
  
   XMLFILEIN=$line.xml
-  XMLFILEOUT=${line}_darkmode.xml
+  XMLFILEOUT=${line}_nightmode.xml
 
   if [ -e $PNGFILEIN ]; then
     [ -e $PNGFILEOUT ] && rm $PNGFILEOUT
